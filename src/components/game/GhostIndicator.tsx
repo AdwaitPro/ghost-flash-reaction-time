@@ -17,21 +17,36 @@ const GhostIndicator: React.FC<GhostIndicatorProps> = ({ isVisible, animateAt, g
 
   return (
     <motion.div
-      className="absolute top-1/2 left-0 w-full h-12 flex items-center"
+      className="absolute top-1/2 left-0 w-full h-12 flex items-center pointer-events-none"
       initial={{ opacity: 0, x: "-100%" }}
       animate={{ 
         opacity: [0, 0.7, 0.7, 0], 
-        x: ["-100%", "50%", "50%", "120%"], // Move across and then off-screen
+        x: ["-100%", "50%", "50%", "120%"] 
       }}
       transition={{ 
-        duration: ghostTapTime + 0.5, // Total animation time: when ghost taps + little extra to fade out
-        times: [0, ghostTapTime / (ghostTapTime + 0.5) * 0.8, ghostTapTime / (ghostTapTime + 0.5), 1], // Control keyframes timing
+        duration: ghostTapTime + 0.5, 
+        times: [0, ghostTapTime / (ghostTapTime + 0.5) * 0.8, ghostTapTime / (ghostTapTime + 0.5), 1],
         ease: "linear" 
       }}
-      style={{ y: '-50%' }} // Center vertically
+      style={{ y: '-50%' }}
     >
-      <div className="p-2 bg-secondary-purple/30 rounded-full shadow-neon-purple animate-pulse-glow">
-        <Ghost size={28} className="text-light-purple" />
+      <div className="relative p-2 rounded-full bg-secondary-purple/30 backdrop-filter backdrop-blur-sm">
+        {/* Glow effect */}
+        <div className="absolute inset-0 rounded-full bg-light-purple/20 blur-md animate-pulse-glow"></div>
+        <Ghost size={28} className="text-light-purple relative z-10" />
+        
+        {/* Trail effect */}
+        <motion.div 
+          className="absolute top-1/2 right-full h-1 bg-gradient-to-l from-light-purple/50 to-transparent"
+          initial={{ width: 0 }}
+          animate={{ width: [0, 30, 0] }}
+          transition={{ 
+            duration: 1, 
+            repeat: Infinity,
+            repeatType: "loop"
+          }}
+          style={{ y: '-50%' }}
+        />
       </div>
     </motion.div>
   );
